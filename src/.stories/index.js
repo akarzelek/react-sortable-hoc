@@ -461,7 +461,7 @@ storiesOf('General | Layout / Vertical list', module)
       <div className={style.root}>
         <ListWrapper
           component={SortableList}
-          items={getItems(50, 59)}
+          items={getItems(500, 59)}
           helperClass={style.stylizedHelper}
         />
       </div>
@@ -525,7 +525,7 @@ storiesOf('General | Layout / Grid', module)
         <ListWrapper
           component={SortableList}
           axis={'xy'}
-          items={getItems(10, false)}
+          items={getItems(400, 110)}
           helperClass={style.stylizedHelper}
           className={classNames(style.list, style.stylizedList, style.grid)}
           itemClass={classNames(style.stylizedItem, style.gridItem)}
