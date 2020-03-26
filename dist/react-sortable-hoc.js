@@ -1184,6 +1184,22 @@ function sortableContainer(WrappedComponent) {
 
         _defineProperty(
           _assertThisInitialized(_assertThisInitialized(_this)),
+          '_handleSortMove',
+          function(event) {
+            _this.animateNodes();
+
+            _this.autoscroll();
+
+            if (window.requestAnimationFrame) _this.sortMoveAF = null;
+            else
+              setTimeout(function() {
+                _this.sortMoveAF = null;
+              }, 1000 / 60);
+          },
+        );
+
+        _defineProperty(
+          _assertThisInitialized(_assertThisInitialized(_this)),
           'handleSortMove',
           function(event) {
             var onSortMove = _this.props.onSortMove;
@@ -1192,11 +1208,21 @@ function sortableContainer(WrappedComponent) {
               event.preventDefault();
             }
 
+            if (_this.sortMoveAF) {
+              return;
+            }
+
             _this.updateHelperPosition(event);
 
-            _this.animateNodes();
+            if (window.requestAnimationFrame) {
+              _this.sortMoveAF = window.requestAnimationFrame(
+                _this._handleSortMove,
+              );
+            } else {
+              _this.sortMoveAF = true;
 
-            _this.autoscroll();
+              _this._handleSortMove();
+            }
 
             if (onSortMove) {
               onSortMove(event);
@@ -1211,6 +1237,12 @@ function sortableContainer(WrappedComponent) {
             var _this$props4 = _this.props,
               hideSortableGhost = _this$props4.hideSortableGhost,
               onSortEnd = _this$props4.onSortEnd;
+
+            if (window.cancelAnimationFrame && _this.sortMoveAF) {
+              window.cancelAnimationFrame(_this.sortMoveAF);
+              _this.sortMoveAF = null;
+            }
+
             var _this$manager = _this.manager,
               collection = _this$manager.active.collection,
               isKeySorting = _this$manager.isKeySorting;
